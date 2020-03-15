@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,6 +13,9 @@ type HandlerInterface interface {
 	PathPrefix() string
 }
 
-func FinalHandler(w http.ResponseWriter, r *http.Request) {
-	_, _ = fmt.Fprintln(w, "Success")
+func HealthzHandler(w http.ResponseWriter, r *http.Request) {
+	response := struct{ Message string `json:"message"` }{
+		Message: "OK",
+	}
+	_ = json.NewEncoder(w).Encode(response)
 }

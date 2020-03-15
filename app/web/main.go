@@ -37,7 +37,7 @@ func main() {
 	} {
 		hRouter := router.PathPrefix(h.PathPrefix()).Subrouter()
 		hRouter.Use(h.Authenticate)
-		hRouter.HandleFunc("/", handler.FinalHandler)
+		hRouter.HandleFunc("/", handler.HealthzHandler)
 
 		hAuthRouter := authRouter.PathPrefix(h.PathPrefix()).Subrouter()
 		h.HandleAuthentication(hAuthRouter)
