@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/google/logger"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv"
 	"github.com/satriahrh/oauth2-go/handler"
 	"github.com/satriahrh/oauth2-go/handler/authorization-code"
@@ -17,9 +18,12 @@ import (
 )
 
 func main() {
+	loggerIo := os.Stdout
+	defer logger.Init("OAuth2 Go Logger", true, true, loggerIo).Close()
+
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Fatal("Error loading .env file")
 	}
 
 	router := mux.NewRouter()
@@ -49,13 +53,12 @@ func main() {
 		writeTimeout = 5 * time.Second
 	}
 
-	logger := log.New(os.Stdout, "", 0)
+	loggedRouter := handlers.LoggingHandler(loggerIo, router)
 	server := &http.Server{
 		Addr:         fmt.Sprintf("%v:%v", os.Getenv("HOST"), os.Getenv("PORT")),
-		Handler:      router,
+		Handler:      loggedRouter,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
-		ErrorLog:     logger,
 	}
-	log.Fatal(server.ListenAndServe())
+	logger.Fatal(server.ListenAndServe())
 }
