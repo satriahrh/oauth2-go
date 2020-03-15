@@ -16,14 +16,6 @@ import (
 	"github.com/satriahrh/oauth2-go/handler/password-credentials"
 )
 
-func final(w http.ResponseWriter, r *http.Request) {
-	_, _ = fmt.Fprintln(w, "Success")
-}
-
-type Handler struct {
-	Handler handler.HandlerInterface
-}
-
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -41,7 +33,7 @@ func main() {
 	} {
 		hRouter := router.PathPrefix(h.PathPrefix()).Subrouter()
 		hRouter.Use(h.Authenticate)
-		hRouter.Handle("/", http.HandlerFunc(final))
+		hRouter.HandleFunc("/", handler.FinalHandler)
 
 		hAuthRouter := authRouter.PathPrefix(h.PathPrefix()).Subrouter()
 		h.HandleAuthentication(hAuthRouter)
