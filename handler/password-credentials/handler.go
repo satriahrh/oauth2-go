@@ -16,14 +16,14 @@ func NewHandler() *Handler {
 	}
 }
 
-func (h *Handler) HandleAuthentication(router *mux.Router) {
-
-}
-
 func (h *Handler) Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		next.ServeHTTP(w, r)
 	})
+}
+
+func (h *Handler) HandleAuthentication(router *mux.Router) {
+
 }
 
 func (h *Handler) PathPrefix() string {
