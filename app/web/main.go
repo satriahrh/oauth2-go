@@ -37,25 +37,25 @@ func main() {
 
 		hAuthRouter := authRouter.PathPrefix(h.PathPrefix()).Subrouter()
 		h.HandleAuthentication(hAuthRouter)
-
-		readTimeout, err := time.ParseDuration(os.Getenv("READ_TIMEOUT"))
-		if err != nil {
-			readTimeout = 1 * time.Second
-		}
-
-		writeTimeout, err := time.ParseDuration(os.Getenv("WRITE_TIMEOUT"))
-		if err != nil {
-			writeTimeout = 5 * time.Second
-		}
-
-		logger := log.New(os.Stdout, "", 0)
-		server := &http.Server{
-			Addr:         fmt.Sprintf("%v:%v", os.Getenv("HOST"), os.Getenv("PORT")),
-			Handler:      router,
-			ReadTimeout:  readTimeout,
-			WriteTimeout: writeTimeout,
-			ErrorLog:     logger,
-		}
-		log.Fatal(server.ListenAndServe())
 	}
+
+	readTimeout, err := time.ParseDuration(os.Getenv("READ_TIMEOUT"))
+	if err != nil {
+		readTimeout = 1 * time.Second
+	}
+
+	writeTimeout, err := time.ParseDuration(os.Getenv("WRITE_TIMEOUT"))
+	if err != nil {
+		writeTimeout = 5 * time.Second
+	}
+
+	logger := log.New(os.Stdout, "", 0)
+	server := &http.Server{
+		Addr:         fmt.Sprintf("%v:%v", os.Getenv("HOST"), os.Getenv("PORT")),
+		Handler:      router,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
+		ErrorLog:     logger,
+	}
+	log.Fatal(server.ListenAndServe())
 }
