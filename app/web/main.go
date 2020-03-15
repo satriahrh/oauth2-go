@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/satriahrh/oauth2-go/handler"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +9,11 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/satriahrh/oauth2-go/handler"
+	"github.com/satriahrh/oauth2-go/handler/authorization-code"
+	"github.com/satriahrh/oauth2-go/handler/client-credentials"
+	"github.com/satriahrh/oauth2-go/handler/implicit"
+	"github.com/satriahrh/oauth2-go/handler/password-credentials"
 )
 
 func final(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +33,12 @@ func main() {
 	router := mux.NewRouter()
 	authRouter := router.Path("/auth").Subrouter()
 
-	for _, h := range []handler.HandlerInterface{} {
+	for _, h := range []handler.HandlerInterface{
+		implicit.NewHandler(),
+		authorization_code.NewHandler(),
+		password_credentials.NewHandler(),
+		client_credentials.NewHandler(),
+	} {
 		hRouter := router.PathPrefix(h.PathPrefix()).Subrouter()
 		hRouter.Use(h.Authenticate)
 		hRouter.Handle("/", http.HandlerFunc(final))
